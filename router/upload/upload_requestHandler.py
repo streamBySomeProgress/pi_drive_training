@@ -5,7 +5,7 @@ from log.logger import setup_logger
 from global_path.global_path import img_data_path, label_path
 
 
-logging_info = setup_logger('main', 'log_camera_requestHandler.txt', logging.INFO)
+logging_info = setup_logger('main', 'log_upload_requestHandler.txt', logging.INFO)
 
 upload_handler = APIRouter(prefix="/upload")
 

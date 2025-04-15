@@ -13,4 +13,4 @@ app.include_router(upload_handler)
 
 if __name__ == "__main__":
     logging_info.info("FastAPI server starting...")
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5001) # todo 포트번호는 추후 환경변수로 분리
