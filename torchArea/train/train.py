@@ -9,7 +9,6 @@ from torchArea.cnn.lineCnn import LineCNN
 from global_path.global_path import img_data_path, model_path, label_path
 
 
-global_model_path = model_path
 
 # 데이터셋 정의
 class LineDataset(Dataset):
@@ -56,9 +55,9 @@ def TrainModel():
             running_loss += loss.item()
         print(f"Epoch {epoch+1}, Loss: {running_loss / len(loader)}")
 
-    if not os.path.exists(global_model_path):
+    if not os.path.exists(model_path):
         # 기존 모델 삭제
-        os.remove(global_model_path)
+        os.remove(model_path)
     # 모델 저장
-    torch.save(model.state_dict(), global_model_path) # 파일 형식으로 저장됨(모델의 state_dict만 저장)
-    print(f"Model saved on {global_model_path}")
+    torch.save(model.state_dict(), model_path) # 파일 형식으로 저장됨(모델의 state_dict만 저장)
+    print(f"Model saved on {model_path}")
