@@ -2,6 +2,7 @@ from fastapi import APIRouter, File, UploadFile, HTTPException
 import os
 import logging
 from log.logger import setup_logger
+from global_path.global_path import img_data_path, label_path
 
 
 logging_info = setup_logger('main', 'log_camera_requestHandler.txt', logging.INFO)
@@ -15,10 +16,6 @@ async def upload_img(class_label: int, image: UploadFile = File(...)):
     - 이미지: JPEG 포맷.
     - 저장: images/image_YYYYMMDD_HHMMSS.jpg.
     """
-
-    output_dir = "img_data"
-    labels_file = os.path.join(output_dir, "labels.txt")
-
     try:
         # MIME 타입 검증
         if image.content_type != "image/jpeg":
@@ -28,7 +25,7 @@ async def upload_img(class_label: int, image: UploadFile = File(...)):
         content = await image.read()
 
         # 클래스별 디렉토리 생성 및 저장
-        class_dir = os.path.join(output_dir, f"class_{class_label}")
+        class_dir = os.path.join(img_data_path, f"class_{class_label}")
         file_list = os.listdir(class_dir)
 
         if not os.path.exists(class_dir):
@@ -41,8 +38,8 @@ async def upload_img(class_label: int, image: UploadFile = File(...)):
             f.write(content)
 
         # labels.txt에 상대경로 및 이에 대응되는 라벨을 기록 (상대 경로 사용(class_0/frame_0.jpg 0))
-        rel_filepath = os.path.relpath(filepath, output_dir)
-        with open(labels_file, "a") as f:
+        rel_filepath = os.path.relpath(filepath, img_data_path)
+        with open(label_path, "a") as f:
             f.write(f"{rel_filepath} {class_label}\n")
 
         return {"status": "success", "filename": filename}
