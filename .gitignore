@@ -1,0 +1,7 @@
+# venv 이하 모든 파일을 무시
+/venv
+# 패키지 정보가 들어있는 파일은 관리(일괄설치: pip install -r requirements.txt)
+!/venv/requirements.txt
+
+# log 디렉터리 이하 txt 확장자 파일은 로그 파일로 간주하고 전부 무시
+/log/*.txt
