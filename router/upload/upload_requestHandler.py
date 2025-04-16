@@ -25,14 +25,14 @@ async def upload_img(
             raise HTTPException(status_code=400, detail="Only JPEG images are supported")
 
         # 이미지 데이터 읽기
-        content = await image.read()
+        imgContent = await image.read()
 
         # 클래스별 디렉토리 생성 및 저장
         class_dir = os.path.join(img_data_path, f"class_{class_label}")
 
         if not os.path.exists(class_dir):
             os.makedirs(class_dir)
-            logging_info(f'{class_dir} directory is created')
+            logging_info.info(f'{class_dir} directory is created')
 
         file_list = os.listdir(class_dir)
         filename = f"frame_{len(file_list)}.jpg"
@@ -40,12 +40,14 @@ async def upload_img(
 
         # 파일 저장
         with open(filepath, "wb") as f:
-            f.write(content)
+            f.write(imgContent)
+            logging_info.info(f'img data is stored at {filepath}')
 
         # labels.txt에 상대경로 및 이에 대응되는 라벨을 기록 (상대 경로 사용(class_0/frame_0.jpg 0))
         rel_filepath = os.path.relpath(filepath, img_data_path)
         with open(label_path, "a") as f:
             f.write(f"{rel_filepath} {class_label}\n")
+            logging_info.info(f"label data is written at {label_path} as '{rel_filepath} {class_label}'")
 
         return {"status": "success", "filename": filename}
 
