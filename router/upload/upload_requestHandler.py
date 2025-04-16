@@ -10,7 +10,10 @@ logging_info = setup_logger('main', 'log_upload_requestHandler.txt', logging.INF
 upload_handler = APIRouter(prefix="/upload")
 
 @upload_handler.post("/image")
-async def upload_img(image: UploadFile = File(...), class_label: int = Form(...)):
+async def upload_img(
+    image: UploadFile = File(...),
+    class_label: int = Form(...)
+):
     """
     단일 이미지를 업로드하고 저장.
     - 이미지: JPEG 포맷.
@@ -26,10 +29,12 @@ async def upload_img(image: UploadFile = File(...), class_label: int = Form(...)
 
         # 클래스별 디렉토리 생성 및 저장
         class_dir = os.path.join(img_data_path, f"class_{class_label}")
-        file_list = os.listdir(class_dir)
 
         if not os.path.exists(class_dir):
             os.makedirs(class_dir)
+            logging_info(f'{class_dir} directory is created')
+
+        file_list = os.listdir(class_dir)
         filename = f"frame_{len(file_list)}.jpg"
         filepath = os.path.join(class_dir, filename)
 
