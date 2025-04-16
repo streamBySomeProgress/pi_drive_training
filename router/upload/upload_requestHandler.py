@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Form
 import os
 import logging
 from log.logger import setup_logger
@@ -10,7 +10,7 @@ logging_info = setup_logger('main', 'log_upload_requestHandler.txt', logging.INF
 upload_handler = APIRouter(prefix="/upload")
 
 @upload_handler.post("/image")
-async def upload_img(class_label: int, image: UploadFile = File(...)):
+async def upload_img(image: UploadFile = File(...), class_label: int = Form(...)):
     """
     단일 이미지를 업로드하고 저장.
     - 이미지: JPEG 포맷.
