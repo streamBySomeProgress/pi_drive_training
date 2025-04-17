@@ -1,4 +1,5 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException, Form
+from fastapi.responses import JSONResponse
 import os
 import logging
 from log.logger import setup_logger
@@ -49,7 +50,13 @@ async def upload_img(
             f.write(f"{rel_filepath} {class_label}\n")
             logging_info.info(f"label data is written at {label_path} as '{rel_filepath} {class_label}'")
 
-        return {"status": "success", "filename": filename}
+        return JSONResponse(
+            status_code=200,
+            content={"status": "success", "filename": filename}
+        )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error saving image: {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content=f"Error saving image: {str(e)}"
+        )
