@@ -58,7 +58,7 @@ criterion = nn.CrossEntropyLoss() # 다중 클래스 분류 영역에 적합한 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # 모델데이터셋 및 로더
-dataset = LineDataset(label_path, img_data_path, True)
+dataset = LineDataset(label_path, img_data_path, False)
 train_size = int(0.8 * len(dataset)) # 훈련, 검증에 쓰이는 데이터 비율은 8 : 2
 val_size = len(dataset) - train_size
 
@@ -70,7 +70,7 @@ val_loader = DataLoader(val_dataset, batch_size=4, shuffle=False) # 실 검증�
 # 모델 훈련 함수
 def trainModelWithEval():
     # 학습 루프
-    for epoch in range(14):
+    for epoch in range(8):
         model.train()
         running_loss = 0.0
         for images, labels in train_loader:
