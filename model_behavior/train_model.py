@@ -98,22 +98,4 @@ def trainModelWithEval():
     torch.save(model.state_dict(), model_path) # 파일 형식으로 저장됨(모델의 state_dict만 저장)
     print(f"Model saved on {model_path}")
 
-    # 이하 pi_drive 영역으로의 전송 동작
-    # 파일을 바이너리(read as binary) 모드로 열어 전송
-    with open(model_path, "rb") as f:
-        files = {
-            "file": (
-                os.path.basename(model_path),
-                f,
-                "application/octet-stream" # .pth 확장자에 대응하는 MIME 타입이 부재한 관계로 일반 바이너리 파일 타입의 content-type 사용
-            )
-        }
-        response = requests.post(f"http://{SERVER_IP}:{SERVER_PORT}/model/replace", files=files)
-
-    # 응답 확인
-    if response.status_code == 200:
-        print("model is sent successfully:", response.json())
-    else:
-        print("model sending is failed:", response.status_code, response.text)
-
 trainModelWithEval() # 본 모듈을 타 영역에서 임포트할 시 본 함수 호출 영역은 삭제

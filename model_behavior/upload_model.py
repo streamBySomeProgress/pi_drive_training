@@ -33,12 +33,12 @@ def uploadModel():
                     "application/octet-stream" # .pth 확장자에 대응하는 MIME 타입이 부재한 관계로 일반 바이너리 파일 타입의 content-type 사용
                 )
             }
-        response = requests.post(f"http://{SERVER_IP}:{SERVER_PORT}/model/replace", files=files)
+            response = requests.post(f"http://{SERVER_IP}:{SERVER_PORT}/model/replace", files=files)
 
 
         # 응답 처리
         response.raise_for_status()  # 4xx, 5xx 에러 시 예외 발생
-        return response.json()
+        print("module is uploaded successfully")
 
     except RequestException as e:
         print(f"some error which is related network's problem occurred: {str(e)}")
@@ -50,9 +50,5 @@ def uploadModel():
         print(f"unexpected error: {str(e)}")
         raise
 
-# 해당 모듈을 타 영역에서 임포트할 시 본 코드와 같은 실행 영역은 삭제할 것
-try:
-    result = uploadModel()
-    print("module is uploaded successfully:", result)
-except Exception as e:
-    print("uploading is failed:", str(e))
+# 해당 모듈을 타 영역에서 임포트할 시 본 코드와 같은 실행 영역은 삭제할 것(python -m model_behavior.upload_model)
+uploadModel()
