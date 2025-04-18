@@ -27,8 +27,9 @@ class LineDataset(Dataset):
         if augment:
             # 증강
             self.transform = transforms.Compose([
-                transforms.RandomRotation(10),
-                transforms.ColorJitter(brightness=0.2, contrast=0.2),
+                transforms.RandomRotation(10),  # ±10도 회전
+                transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3),  # 조명/대비 변화
+                transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # 평행 이동
                 transforms.Resize(480),
                 transforms.CenterCrop((480, 640)),
                 transforms.ToTensor(),
@@ -52,12 +53,12 @@ class LineDataset(Dataset):
         return image, label
 
 # 모델, 손실 함수, 최적화
-model = LineCNN()
+model = LineCNN(0.6)
 criterion = nn.CrossEntropyLoss() # 다중 클래스 분류 영역에 적합한 손실 함수를 사용
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # 모델데이터셋 및 로더
-dataset = LineDataset(label_path, img_data_path)
+dataset = LineDataset(label_path, img_data_path, True)
 train_size = int(0.8 * len(dataset)) # 훈련, 검증에 쓰이는 데이터 비율은 8 : 2
 val_size = len(dataset) - train_size
 
@@ -69,7 +70,7 @@ val_loader = DataLoader(val_dataset, batch_size=4, shuffle=False) # 실 검증�
 # 모델 훈련 함수
 def trainModelWithEval():
     # 학습 루프
-    for epoch in range(10):
+    for epoch in range(14):
         model.train()
         running_loss = 0.0
         for images, labels in train_loader:
@@ -83,12 +84,20 @@ def trainModelWithEval():
         # 여기서부터 테스트(평가) 영역
         model.eval()
         val_loss = 0.0
+
+        correct = 0
+        total = 0
         with torch.no_grad():
             for images, labels in val_loader:
                 outputs = model(images)
                 loss = criterion(outputs, labels)
                 val_loss += loss.item()
+
+                _, predicted = torch.max(outputs, 1) # 최댓값을 갖는 클래스(predicted)를 할당받아 사용
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
         print(f"Epoch {epoch+1}, Train Loss: {running_loss / len(train_loader)}, Val Loss: {val_loss / len(val_loader)}")
+        print(f"Accuracy: {100 * correct / total}%") # 정확도는 80% 이상이여야
 
     if os.path.exists(model_path):
         # 기존 모델 삭제

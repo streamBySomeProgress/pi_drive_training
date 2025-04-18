@@ -1,6 +1,6 @@
 import requests
 import os
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, HTTPError
 from dotenv import load_dotenv
 from global_path.global_path import model_path
 
@@ -37,8 +37,11 @@ def uploadModel():
 
 
         # 응답 처리
-        response.raise_for_status()  # 4xx, 5xx 에러 시 예외 발생
-        print("module is uploaded successfully")
+        try:
+            response.raise_for_status()  # 4xx, 5xx 에러 시 예외 발생
+            print("module is uploaded successfully")
+        except HTTPError as e:
+            print(f"HTTPError is occurred: {str(e)}")
 
     except RequestException as e:
         print(f"some error which is related network's problem occurred: {str(e)}")
