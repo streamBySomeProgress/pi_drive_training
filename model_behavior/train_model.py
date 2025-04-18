@@ -115,3 +115,5 @@ def trainModelWithEval():
         print("model is sent successfully:", response.json())
     else:
         print("model sending is failed:", response.status_code, response.text)
+
+trainModelWithEval() # 본 모듈을 타 영역에서 임포트할 시 본 함수 호출 영역은 삭제
