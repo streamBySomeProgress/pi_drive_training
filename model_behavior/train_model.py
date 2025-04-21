@@ -8,7 +8,6 @@ import os
 from torchArea.cnn.lineCnn import LineCNN
 from global_path.global_path import img_data_path, model_path, label_path
 from torch.utils.data import random_split
-import requests
 from dotenv import load_dotenv
 
 load_dotenv() # 환경변수 로드
@@ -23,7 +22,6 @@ class LineDataset(Dataset):
     def __init__(self, label_file, img_dir, augment = False):
         self.img_labels = [(line.split()[0], int(line.split()[1])) for line in open(label_file)] # "class_0/frame_0.jpg", 0" 형식의 tuple
         self.img_dir = img_dir
-        # todo 증강 여부에 따른 결과 차이 관찰해 보기
         if augment:
             # 증강
             self.transform = transforms.Compose([
@@ -58,7 +56,7 @@ criterion = nn.CrossEntropyLoss() # 다중 클래스 분류 영역에 적합한 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # 모델데이터셋 및 로더
-dataset = LineDataset(label_path, img_data_path, False)
+dataset = LineDataset(label_path, img_data_path, True)
 train_size = int(0.8 * len(dataset)) # 훈련, 검증에 쓰이는 데이터 비율은 8 : 2
 val_size = len(dataset) - train_size
 

@@ -6,8 +6,10 @@
 비활성화: deactive
 
 패키지 목록 최신화: pip freeze > requirements.txt
-
 목록에 있는 패키지 일괄 설치: pip install -r requirements.txt
+실행: python main.py
+훈련: python -m model_behavior.train_model
+모델 전송: python -m model_behavior.upload_model
 
 ## 유의사항
 1. 학습해야 할 클래스는 총 6개(Left, Center, Right, None, Left Curve, Right Curve), (0~5)
